@@ -31,6 +31,7 @@ public class GameController : MonoBehaviour, IController
     {
         for (int i = 0; i < zones.Length; i++)
         {
+            if (levelConfig.zoneConfigs.Length - 1 < i) return;
             zones[i].Initialize(levelConfig.zoneConfigs[i]);
         }
     }

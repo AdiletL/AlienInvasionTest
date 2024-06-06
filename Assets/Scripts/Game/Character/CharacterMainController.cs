@@ -27,16 +27,16 @@ public class CharacterMainController : MainBehaviour
 
     private void OnEnable()
     {
-        GetControl<CharacterHealthCotrol>().onRevival += onRevival;
+        GetControl<CharacterHealthCotrol>().onRevival += OnRevival;
         GetControl<CharacterHealthCotrol>().onDeath += OnDeath;
     }
     private void OnDisable()
     {
-        GetControl<CharacterHealthCotrol>().onRevival -= onRevival;
+        GetControl<CharacterHealthCotrol>().onRevival -= OnRevival;
         GetControl<CharacterHealthCotrol>().onDeath -= OnDeath;
     }
 
-    private void onRevival() => SwitchState(CharacterStateType.idle);
+    private void OnRevival() => SwitchState(CharacterStateType.idle);
     private void OnDeath() => Die();
 
     public void SwitchState(CharacterStateType state)
@@ -48,7 +48,10 @@ public class CharacterMainController : MainBehaviour
         onSwitchState?.Invoke(currentEnableState);
     }
 
-    public void ReturnToPool() => PoolManager.Instance.ReturnObjectToPool(gameObject);
+    public virtual void ReturnToPool()
+    {
+        PoolManager.Instance.ReturnObjectToPool(gameObject);
+    }
 
     public override void Die()
     {

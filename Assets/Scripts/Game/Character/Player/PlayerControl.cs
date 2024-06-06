@@ -6,8 +6,8 @@ using UnityEngine;
 public class PlayerControl : MonoBehaviour, IControl
 {
     public event Action<Vector3> OnSwipe;
-
     public IController iController { get; set; }
+
     private PlayerMainController playerComponent;
     private Platform platform;
 
@@ -23,9 +23,14 @@ public class PlayerControl : MonoBehaviour, IControl
         }
 
 #if UNITY_EDITOR
-        platform = new Desktop();
+        var mobile = new Mobile();
+        mobile.joystick = FindObjectOfType<Joystick>();
+        platform = mobile;
+        //platform = mobilePlatform;
 #elif UNITY_ANDROID
-        platform = new Mobile();
+        var mobile = new Mobile();
+        mobile.joystick = FindObjectOfType<Joystick>();
+        platform = mobile;
 #endif
 
         var playerConfig = (SO_PlayerConfig)playerComponent.so_CharacterConfig;
@@ -64,44 +69,20 @@ public class PlayerControl : MonoBehaviour, IControl
         public Vector2 currentPosition { get; protected set; }
         public Vector3 direction { get; protected set; }
 
-        public float swipeRange = 50.0f;
-        public float initialSwipeThreshold = 20.0f;
+        public float swipeRange { get; protected set; } = 50.0f;
+        public float initialSwipeThreshold { get; protected set; } = 20.0f;
 
         public abstract void SwipeCheck();
     }
 
+    [System.Serializable]
     public class Mobile : Platform
     {
+        [HideInInspector] public Joystick joystick;
+
         public override void SwipeCheck()
         {
-            if (Input.touchCount > 0)
-            {
-                Touch touch = Input.GetTouch(0);
-
-                switch (touch.phase)
-                {
-                    case TouchPhase.Began:
-                        startPosition = touch.position;
-                        break;
-
-                    case TouchPhase.Moved:
-                        currentPosition = touch.position;
-                        Vector2 distance = currentPosition - startPosition;
-
-                        if (distance.magnitude >= initialSwipeThreshold)
-                        {
-                            if (distance.magnitude >= swipeRange)
-                            {
-                                direction = new Vector3(distance.x, 0, distance.y).normalized;
-                            }
-                        }
-                        break;
-
-                    case TouchPhase.Ended:
-                        direction = Vector3.zero;
-                        break;
-                }
-            }
+            direction = new Vector3(joystick.Horizontal, 0, joystick.Vertical);
         }
     }
 
@@ -109,28 +90,7 @@ public class PlayerControl : MonoBehaviour, IControl
     {
         public override void SwipeCheck()
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                startPosition = Input.mousePosition;
-            }
-
-            if (Input.GetMouseButton(0))
-            {
-                currentPosition = Input.mousePosition;
-                Vector2 distance = currentPosition - startPosition;
-                if (distance.magnitude >= initialSwipeThreshold)
-                {
-                    if (distance.magnitude >= swipeRange)
-                    {
-                        direction = new Vector3(distance.x, 0, distance.y).normalized;
-                    }
-                }
-            }
-
-            if (Input.GetMouseButtonUp(0))
-            {
-                direction = Vector3.zero;
-            }
+            
         }
     }
 }

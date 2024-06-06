@@ -12,5 +12,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8ef80c9f85f8e14aa1e0cb4af0fe81a, type: 3}
   m_Name: SO_LevelConfig
   m_EditorClassIdentifier: 
-  gameController: {fileID: 0}
-  zoneConfigs: []
+  gameController: {fileID: 7860650189418318798, guid: 5c0a82c14df51b849942c9fbab7aa820, type: 3}
+  zoneConfigs:
+  - enemyConfigs:
+    - enemyType: 1
+      cooldown: 1
+      total: 2
+  - enemyConfigs:
+    - enemyType: 1
+      cooldown: 3
+      total: 4
+    - enemyType: 2
+      cooldown: 5
+      total: 1
+  - enemyConfigs:
+    - enemyType: 1
+      cooldown: 3
+      total: 2
+    - enemyType: 2
+      cooldown: 5
+      total: 3
+  - enemyConfigs:
+    - enemyType: 1
+      cooldown: 3
+      total: 8
+    - enemyType: 2
+      cooldown: 5
+      total: 1

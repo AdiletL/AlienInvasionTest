@@ -20,4 +20,13 @@ public class ZoneConfig : IConfigSO
         public float cooldown;
         public int total;
     }
+
+    public ZoneConfig(ZoneConfig newConfig)
+    {
+        enemyConfigs = new EnemyConfig[newConfig.enemyConfigs.Length];
+        for (int i = 0; i < newConfig.enemyConfigs.Length; i++)
+        {
+            enemyConfigs[i] = newConfig.enemyConfigs[i];
+        }
+    }
 }

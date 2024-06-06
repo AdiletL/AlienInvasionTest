@@ -1,17 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(LookAtCamera))]
 public class CharacterUIControl : MonoBehaviour, IControl
 {
     [SerializeField] protected Image healthBar;
+    [SerializeField] protected TextMeshProUGUI healthTxt;
 
     public IController iController { get; set; }
 
     private CharacterMainController characterController;
 
-    public void Initialize(IController controller)
+    public virtual void Initialize(IController controller)
     {
         iController = controller;
         characterController = controller as CharacterMainController;
@@ -21,32 +24,20 @@ public class CharacterUIControl : MonoBehaviour, IControl
             return;
         }
     }
-
-    private void Start()
-    {
-        if (characterController == null)
-        {
-            enabled = false;
-            return;
-        }
-        InitializeEvent();
-    }
-    protected virtual void InitializeEvent()
+    protected virtual void OnEnable()
     {
         characterController.GetControl<CharacterHealthCotrol>().onSetHealth += OnSetHealth;
-    }
-    
-    protected virtual void OnSetHealth(int maxHealth, int currentHealth)
-    {
-        healthBar.fillAmount = (currentHealth / maxHealth);
-    }
 
-    private void OnDestroy()
-    {
-        DeInitializeEvent();
     }
-    protected virtual void DeInitializeEvent()
+    protected virtual void OnDisable()
     {
         characterController.GetControl<CharacterHealthCotrol>().onSetHealth -= OnSetHealth;
+
+    }
+
+    protected virtual void OnSetHealth(int maxHealth, int currentHealth)
+    {
+        healthBar.fillAmount = (float)currentHealth / (float)maxHealth;
+        healthTxt.text = ((currentHealth * 100) / maxHealth).ToString() + "%";
     }
 }

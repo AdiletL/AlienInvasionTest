@@ -28,20 +28,20 @@ public class PlayerMoveControl : CharacterMoveControl
 
         var playerConfig = (SO_PlayerConfig)playerComponent.so_CharacterConfig;
         movementSpeed = playerConfig.movementSpeed;
-        rotateSpeed = playerConfig.speedRotate;
+        rotateSpeed = playerConfig.rotateSpeed;
         gravity = playerConfig.gravity;
     }
-
-    protected override void InitializeEvent()
+    protected override void OnEnable()
     {
-        base.InitializeEvent();
+        base.OnEnable();
         playerComponent.GetControl<PlayerControl>().OnSwipe += OnSwipe;
     }
-    protected override void DeInitializeEvent()
+    protected override void OnDisable()
     {
-        base.DeInitializeEvent();
+        base.OnDisable();
         playerComponent.GetControl<PlayerControl>().OnSwipe -= OnSwipe;
     }
+
     private void OnSwipe(Vector3 direction) => currentDirection = direction;
 
     public override void Move()

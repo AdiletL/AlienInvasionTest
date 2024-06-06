@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-public class EnemyHealthControl : CharacterHealthCotrol
+public abstract class EnemyHealthControl : CharacterHealthCotrol
 {
 
 }

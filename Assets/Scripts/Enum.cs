@@ -25,8 +25,8 @@ public enum CharacterStateType
 public enum EnemyType
 {
     nothing,
-    tiny,
-    small,
+    creep,
+    ogre,
     medium,
     large,
     huge

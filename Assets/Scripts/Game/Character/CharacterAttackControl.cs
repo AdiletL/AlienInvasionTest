@@ -8,7 +8,7 @@ public class CharacterAttackControl : MonoBehaviour, IControl, IAttack
 
     private CharacterMainController characterMainController;
 
-    protected IList<IHealth> currentTarget = new List<IHealth>(50);
+    protected IList<IHealth> currentHealthTargets = new List<IHealth>(50);
 
     private int currentDamage;
 
@@ -18,7 +18,7 @@ public class CharacterAttackControl : MonoBehaviour, IControl, IAttack
     private bool isEnabled;
 
 
-    public void Initialize(IController controller)
+    public virtual void Initialize(IController controller)
     {
         iController = controller;
         characterMainController = iController as CharacterMainController;
@@ -32,33 +32,30 @@ public class CharacterAttackControl : MonoBehaviour, IControl, IAttack
         cooldown = characterMainController.so_CharacterConfig.attackCooldown;
     }
 
-    private void Start()
-    {
-        InitializeEvent();
-    }
-    private void InitializeEvent()
+    protected virtual void OnEnable()
     {
         characterMainController.onSwitchState += OnSwitchController;
         characterMainController.GetControl<CharacterFOVControl>().onFOVEnter += OnFOVEnter;
         characterMainController.GetControl<CharacterFOVControl>().onFOVExit += OnFOVExit;
     }
-    private void DeInitializeEvent()
+    protected virtual void OnDisable()
     {
         characterMainController.onSwitchState -= OnSwitchController;
         characterMainController.GetControl<CharacterFOVControl>().onFOVEnter -= OnFOVEnter;
         characterMainController.GetControl<CharacterFOVControl>().onFOVExit -= OnFOVExit;
     }
+
     private void OnSwitchController(CharacterStateType state)
     {
         isEnabled = state.HasFlag(CharacterStateType.move) ? true : false;
     }
-    private void OnFOVEnter(IController controller)
+    protected virtual void OnFOVEnter(IController controller)
     {
-        currentTarget.Add(controller.GetControl<IHealth>());
+        currentHealthTargets.Add(controller.GetControl<IHealth>());
     }
-    private void OnFOVExit(IController controller)
+    protected virtual void OnFOVExit(IController controller)
     {
-        currentTarget.Remove(controller.GetControl<IHealth>());
+        currentHealthTargets.Remove(controller.GetControl<IHealth>());
     }
 
 
@@ -72,16 +69,18 @@ public class CharacterAttackControl : MonoBehaviour, IControl, IAttack
 
         Attack();
     }
-    public void Attack()
+    public virtual void Attack()
     {
+        if (currentHealthTargets.Count == 0) return;
+
         countCooldown += Time.deltaTime;
 
-        if (cooldown < countCooldown)
+        if (cooldown <= countCooldown)
         {
-            var targets = new List<IHealth>(currentTarget.Count);
-            for (int i = 0; i < currentTarget.Count; i++)
+            var targets = new List<IHealth>(currentHealthTargets.Count);
+            for (int i = 0; i < currentHealthTargets.Count; i++)
             {
-                targets.Add(currentTarget[i]);
+                targets.Add(currentHealthTargets[i]);
             }
 
             foreach (var item in targets)
@@ -92,14 +91,10 @@ public class CharacterAttackControl : MonoBehaviour, IControl, IAttack
             countCooldown = 0;
         }
     }
-    public void ApplyDamage(IHealth health)
+    public virtual void ApplyDamage(IHealth health)
     {
         health.TakeDamage(currentDamage);
-    }
-
-
-    private void OnDestroy()
-    {
-        DeInitializeEvent();
+        if (health.GetHealth() <= 0) currentHealthTargets.Remove(health);
+        print("health: " + currentHealthTargets.Count);
     }
 }

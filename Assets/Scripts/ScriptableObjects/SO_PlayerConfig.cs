@@ -6,6 +6,7 @@ using UnityEngine;
 public class SO_PlayerConfig : SO_CharacterConfig
 {
     [field: SerializeField, Space] public float movementSpeed { get; private set; }
-    [field: SerializeField, Space] public float speedRotate { get; private set; }
+    [field: SerializeField, Space] public float rotateSpeed { get; private set; }
     [field: SerializeField, Space] public float gravity { get; private set; }
+    [field: SerializeField, Space] public float pullSpeed { get; private set; }
 }

@@ -18,6 +18,10 @@ public class CharacterHealthCotrol : MonoBehaviour, IControl, IHealth
 
     private bool isEnabled = true;
 
+    public int GetMaxHealth()
+    {
+        return maxHealth;
+    }
     public int GetHealth()
     {
         return currentHealth;
@@ -35,7 +39,7 @@ public class CharacterHealthCotrol : MonoBehaviour, IControl, IHealth
         }
     }
 
-    public void Initialize(IController controller)
+    public virtual void Initialize(IController controller)
     {
         iController = controller;
         characterMainController = iController as CharacterMainController;
@@ -46,20 +50,21 @@ public class CharacterHealthCotrol : MonoBehaviour, IControl, IHealth
         }
 
         maxHealth = characterMainController.so_CharacterConfig.maxHealth;
-        SetHealh(maxHealth);
+        //SetHealh(maxHealth);
     }
 
-    private void Start()
-    {
-        InitializeEvent();
-    }
-    private void InitializeEvent()
+    protected virtual void OnEnable()
     {
         characterMainController.onSwitchState += OnSwitchController;
     }
-    private void DeInitializeEvent()
+    protected virtual void OnDisable()
     {
         characterMainController.onSwitchState -= OnSwitchController;
+    }
+
+    protected virtual void Start()
+    {
+        SetHealh(maxHealth);
     }
 
     private void OnSwitchController(CharacterStateType state)
@@ -75,10 +80,5 @@ public class CharacterHealthCotrol : MonoBehaviour, IControl, IHealth
     {
         var result = Mathf.Max(currentHealth - damage, 0);
         SetHealh(result);
-    }
-
-    private void OnDestroy()
-    {
-        DeInitializeEvent();
     }
 }

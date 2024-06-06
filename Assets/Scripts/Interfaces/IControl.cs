@@ -21,3 +21,8 @@ public interface IHealth
     public void Revival();
     public void TakeDamage(int damage);
 }
+
+public interface ICollision
+{
+
+}

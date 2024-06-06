@@ -18,24 +18,15 @@ public class CharacterMoveControl : MonoBehaviour, IControl, IMove
             return;
         }
     }
-
-    private void Start()
-    {
-        if (!characterComponent)
-        {
-            enabled = false;
-            return;
-        }
-        InitializeEvent();
-    }
-    protected virtual void InitializeEvent()
+    protected virtual void OnEnable()
     {
         characterComponent.onSwitchState += OnSwitchController;
     }
-    protected virtual void DeInitializeEvent()
+    protected virtual void OnDisable()
     {
         characterComponent.onSwitchState -= OnSwitchController;
     }
+
     private void OnSwitchController(CharacterStateType state)
     {
         isEnabled = state.HasFlag(CharacterStateType.move) ? true : false;
@@ -50,10 +41,5 @@ public class CharacterMoveControl : MonoBehaviour, IControl, IMove
     public virtual void Move()
     {
         
-    }
-
-    private void OnDestroy()
-    {
-        DeInitializeEvent();
     }
 }
