@@ -153,7 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nextSceneName: Game
-  gameMainManager: {fileID: 0}
+  gameMainManager: {fileID: 3306901299641809919, guid: 1a6de6c10450e5042b7d10cb446e6373, type: 3}
 --- !u!4 &952875524
 Transform:
   m_ObjectHideFlags: 0

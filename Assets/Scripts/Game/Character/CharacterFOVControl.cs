@@ -5,15 +5,17 @@ using UnityEngine;
 
 public class CharacterFOVControl : MonoBehaviour, IControl
 {
-    public event Action<IController> onFOVEnter;
-    public event Action<IController> onFOVExit;
+    public event Action<List<IController>> onFOVEnter;
     public IController iController { get; set; }
 
     private CharacterMainController characterMainController;
-    private SphereCollider sphereCollider;
+
+    private List<IController> foundControllers = new List<IController>(100);
 
     private float radius;
     private float angle;
+    private float cooldown;
+    private float countCooldown;
 
     protected IController GetTriggerTarget(Vector3 endPoint)
     {
@@ -38,27 +40,33 @@ public class CharacterFOVControl : MonoBehaviour, IControl
             return;
         }
 
-        sphereCollider = GetComponent<SphereCollider>();
-
         radius = characterMainController.so_CharacterConfig.radiusFOV;
         angle = characterMainController.so_CharacterConfig.angleFOV;
-        sphereCollider.radius = radius;
+        cooldown = characterMainController.so_CharacterConfig.cooldownFOV;
     }
 
-
-    protected virtual void OnTriggerEnter(Collider other)
+    private void LateUpdate()
     {
-        if (other.TryGetComponent(out ICollision collision))
+        countCooldown += Time.deltaTime;
+
+        if (countCooldown > cooldown)
         {
-            var target = GetTriggerTarget(other.transform.position);
-            if (target != null) onFOVEnter?.Invoke(target);
+            FindObject();
+            countCooldown = 0;
         }
     }
-    protected virtual void OnTriggerExit(Collider other)
+
+    private void FindObject()
     {
-        if (other.gameObject.TryGetComponent(out IController controller))
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, radius, Layers.Enemy);
+        foundControllers.Clear();
+        for (int i = hitColliders.Length - 1; i >= 0; i--)
         {
-            onFOVExit?.Invoke(controller);
+            if (hitColliders[i].GetComponent<ICollision>() == null) continue;
+
+            var target = GetTriggerTarget(hitColliders[i].transform.position);
+            foundControllers.Add(target);
         }
+        onFOVEnter?.Invoke(foundControllers);
     }
 }

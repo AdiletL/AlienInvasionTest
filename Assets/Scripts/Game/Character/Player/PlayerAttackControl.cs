@@ -27,6 +27,7 @@ public class PlayerAttackControl : CharacterAttackControl
         {
             var enemy = health as EnemyHealthControl;
             StartCoroutine(PullCharacterCoroutine((CharacterMainController)enemy.iController));
+            currentHealthTargets.Remove(health);
         }
     }
 

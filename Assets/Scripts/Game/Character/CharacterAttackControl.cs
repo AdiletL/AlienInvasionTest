@@ -1,9 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class CharacterAttackControl : MonoBehaviour, IControl, IAttack
 {
+    public event Action<bool> OnAttack;
+
     public IController iController { get; set; }
 
     private CharacterMainController characterMainController;
@@ -11,6 +15,7 @@ public class CharacterAttackControl : MonoBehaviour, IControl, IAttack
     protected IList<IHealth> currentHealthTargets = new List<IHealth>(50);
 
     private int currentDamage;
+    private int totalTarget;
 
     private float cooldown;
     private float countCooldown;
@@ -30,32 +35,48 @@ public class CharacterAttackControl : MonoBehaviour, IControl, IAttack
 
         currentDamage = characterMainController.so_CharacterConfig.damage;
         cooldown = characterMainController.so_CharacterConfig.attackCooldown;
+        totalTarget = characterMainController.so_CharacterConfig.totalTarget;
     }
 
     protected virtual void OnEnable()
     {
         characterMainController.onSwitchState += OnSwitchController;
         characterMainController.GetControl<CharacterFOVControl>().onFOVEnter += OnFOVEnter;
-        characterMainController.GetControl<CharacterFOVControl>().onFOVExit += OnFOVExit;
     }
     protected virtual void OnDisable()
     {
         characterMainController.onSwitchState -= OnSwitchController;
         characterMainController.GetControl<CharacterFOVControl>().onFOVEnter -= OnFOVEnter;
-        characterMainController.GetControl<CharacterFOVControl>().onFOVExit -= OnFOVExit;
     }
 
     private void OnSwitchController(CharacterStateType state)
     {
         isEnabled = state.HasFlag(CharacterStateType.move) ? true : false;
     }
-    protected virtual void OnFOVEnter(IController controller)
+    protected virtual void OnFOVEnter(List<IController> controller)
     {
-        currentHealthTargets.Add(controller.GetControl<IHealth>());
-    }
-    protected virtual void OnFOVExit(IController controller)
-    {
-        currentHealthTargets.Remove(controller.GetControl<IHealth>());
+        var healthes = new List<IHealth>();
+        for (int i = controller.Count - 1; i >= 0; i--)
+        {
+            if (controller[i] == null) continue;
+            healthes.Add(controller[i].GetControl<IHealth>());
+        }
+
+        currentHealthTargets = currentHealthTargets.Intersect(healthes).ToList();
+        currentHealthTargets = currentHealthTargets.Take(totalTarget).ToList();
+        int countController = currentHealthTargets.Count;
+        if (countController >= totalTarget) return;
+
+        for (int i = controller.Count - 1; i >= 0; i--)
+        {
+            if (countController > totalTarget) return;
+            else countController++;
+
+            if (controller[i] == null) continue;
+            currentHealthTargets.Add(controller[i].GetControl<IHealth>());
+        }
+
+        if (currentHealthTargets.Count == 0) OnAttack?.Invoke(false);
     }
 
 
@@ -88,6 +109,7 @@ public class CharacterAttackControl : MonoBehaviour, IControl, IAttack
                 if(item == null || item.GetHealth() <= 0) continue;
                 ApplyDamage(item);
             }
+            OnAttack?.Invoke(true);
             countCooldown = 0;
         }
     }
@@ -95,6 +117,5 @@ public class CharacterAttackControl : MonoBehaviour, IControl, IAttack
     {
         health.TakeDamage(currentDamage);
         if (health.GetHealth() <= 0) currentHealthTargets.Remove(health);
-        print("health: " + currentHealthTargets.Count);
     }
 }

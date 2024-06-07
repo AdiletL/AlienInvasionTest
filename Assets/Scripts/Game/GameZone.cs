@@ -12,7 +12,7 @@ public class GameZone : MonoBehaviour
 
     private Dictionary<EnemyType, int> keyEnemyTotal;
 
-    private List<int> indexes = new List<int>();
+    [HideInInspector] public int zoneID = -1;
 
     private Vector3 GetNewPosition()
     {
@@ -21,18 +21,6 @@ public class GameZone : MonoBehaviour
         float x = Mathf.Cos(angle) * distance;
         float z = Mathf.Sin(angle) * distance;
         return new Vector3(transform.position.x + x, transform.position.y, transform.position.z + z);
-    }
-    private int GetIndex()
-    {
-        for (int i = 0; i < indexes.Count; i++)
-        {
-            if (indexes[i] == -1)
-            {
-                return i;
-            }
-        }
-        indexes.Add((indexes.Count - 1) + 1);
-        return indexes.Count - 1;
     }
 
     public void Initialize(IConfigSO config)
@@ -48,7 +36,6 @@ public class GameZone : MonoBehaviour
         keyEnemyTotal = new Dictionary<EnemyType, int>(zoneConfig.enemyConfigs.Length);
         foreach (var item in zoneConfig.enemyConfigs)
             keyEnemyTotal.Add(item.enemyType, 0);
-
     }
 
     private void OnEnable()
@@ -60,10 +47,10 @@ public class GameZone : MonoBehaviour
         EnemyMainController.OnReturnToPool -= OnReturnToPoolEnemy;
     }
 
-    private void OnReturnToPoolEnemy(EnemyType enemyType, int id)
+    private void OnReturnToPoolEnemy(EnemyType enemyType, int zoneID)
     {
-        keyEnemyTotal[enemyType]--;
-        indexes[id] = -1;
+        if (this.zoneID != zoneID || !keyEnemyTotal.ContainsKey(enemyType)) return;
+        else keyEnemyTotal[enemyType]--;
     }
 
     public void StartSpawnEnemies()
@@ -74,6 +61,8 @@ public class GameZone : MonoBehaviour
 
     private IEnumerator SpawnEnemiesCoroutines()
     {
+        if (zoneConfig == null) yield break;
+
         var countTimes = new List<float>(zoneConfig.enemyConfigs.Length);
         foreach(var item in zoneConfig.enemyConfigs)
             countTimes.Add(item.cooldown);
@@ -93,9 +82,8 @@ public class GameZone : MonoBehaviour
                             var enemyGO = PoolManager.Instance.GetEnemy(zoneConfig.enemyConfigs[i].enemyType);
                             enemyGO.transform.position = GetNewPosition();
                             enemyGO.transform.SetParent(transform);
-                            var index = GetIndex();
                             var enemy = enemyGO.GetComponent<EnemyMainController>();
-                            enemy.id = index;
+                            enemy.currentZoneID = zoneID;
                             enemy.GetControl<EnemyHealthControl>().Revival();
                             keyEnemyTotal[enemy.enemyType]++;
                         }

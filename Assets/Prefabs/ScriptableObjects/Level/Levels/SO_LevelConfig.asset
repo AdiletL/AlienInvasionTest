@@ -17,7 +17,7 @@ MonoBehaviour:
   - enemyConfigs:
     - enemyType: 1
       cooldown: 1
-      total: 2
+      total: 5
   - enemyConfigs:
     - enemyType: 1
       cooldown: 3

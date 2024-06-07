@@ -27,11 +27,12 @@ MonoBehaviour:
     enableStateType: 32
   <maxHealth>k__BackingField: 10
   <damage>k__BackingField: 1
-  <radiusFOV>k__BackingField: 6
-  <angleFOV>k__BackingField: 0
   <totalTarget>k__BackingField: 2
   <attackCooldown>k__BackingField: 0.1
-  <movementSpeed>k__BackingField: 4
+  <radiusFOV>k__BackingField: 5
+  <angleFOV>k__BackingField: 0
+  <cooldownFOV>k__BackingField: 0.1
+  <movementSpeed>k__BackingField: 5
   <rotateSpeed>k__BackingField: 20
   <gravity>k__BackingField: -10
   <pullSpeed>k__BackingField: 10
