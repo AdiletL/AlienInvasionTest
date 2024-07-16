@@ -35,4 +35,4 @@ MonoBehaviour:
   <movementSpeed>k__BackingField: 5
   <rotateSpeed>k__BackingField: 20
   <gravity>k__BackingField: -10
-  <pullSpeed>k__BackingField: 10
+  <pullSpeed>k__BackingField: 13

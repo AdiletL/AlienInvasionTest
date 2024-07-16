@@ -15,27 +15,27 @@ MonoBehaviour:
   gameController: {fileID: 7860650189418318798, guid: 5c0a82c14df51b849942c9fbab7aa820, type: 3}
   zoneConfigs:
   - enemyConfigs:
-    - enemyType: 1
+    - so_EnemyConfig: {fileID: 11400000, guid: 0e3e9a2298ef30a4cb5ee2e6f4e905c0, type: 2}
       cooldown: 1
       total: 5
   - enemyConfigs:
-    - enemyType: 1
+    - so_EnemyConfig: {fileID: 11400000, guid: 0e3e9a2298ef30a4cb5ee2e6f4e905c0, type: 2}
       cooldown: 3
       total: 4
-    - enemyType: 2
+    - so_EnemyConfig: {fileID: 11400000, guid: 062a7d7869e32cc4e8cc6f009deb71f5, type: 2}
       cooldown: 5
       total: 1
   - enemyConfigs:
-    - enemyType: 1
+    - so_EnemyConfig: {fileID: 11400000, guid: 0e3e9a2298ef30a4cb5ee2e6f4e905c0, type: 2}
       cooldown: 3
       total: 2
-    - enemyType: 2
+    - so_EnemyConfig: {fileID: 11400000, guid: 062a7d7869e32cc4e8cc6f009deb71f5, type: 2}
       cooldown: 5
       total: 3
   - enemyConfigs:
-    - enemyType: 1
+    - so_EnemyConfig: {fileID: 11400000, guid: 0e3e9a2298ef30a4cb5ee2e6f4e905c0, type: 2}
       cooldown: 3
       total: 8
-    - enemyType: 2
+    - so_EnemyConfig: {fileID: 11400000, guid: 062a7d7869e32cc4e8cc6f009deb71f5, type: 2}
       cooldown: 5
       total: 1

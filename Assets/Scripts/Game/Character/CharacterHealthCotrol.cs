@@ -3,15 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterHealthCotrol : MonoBehaviour, IControl, IHealth
+public abstract class CharacterHealthCotrol : MainControl, IHealth
 {
     public event Action<int, int> onSetHealth;
     public event Action onRevival;
     public event Action onDeath;
 
-    public IController iController { get; set; }
-
-    private CharacterMainController characterMainController;
+    [SerializeField] private CharacterMainController characterMainController;
 
     private int maxHealth;
     private int currentHealth;
@@ -22,11 +20,11 @@ public class CharacterHealthCotrol : MonoBehaviour, IControl, IHealth
     {
         return maxHealth;
     }
-    public int GetHealth()
+    public int GetCurrentHealth()
     {
         return currentHealth;
     }
-    private void SetHealh(int value)
+    private void SetHealth(int value)
     {
         if (!isEnabled || value == currentHealth) return;
 
@@ -39,46 +37,47 @@ public class CharacterHealthCotrol : MonoBehaviour, IControl, IHealth
         }
     }
 
-    public virtual void Initialize(IController controller)
+    public override void Initialize()
     {
-        iController = controller;
-        characterMainController = iController as CharacterMainController;
-        if (characterMainController == null)
-        {
-            enabled = false;
-            return;
-        }
-
         maxHealth = characterMainController.so_CharacterConfig.maxHealth;
         //SetHealh(maxHealth);
     }
 
-    protected virtual void OnEnable()
+    protected override void SetController()
     {
+        iController = characterMainController;
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
         characterMainController.onSwitchState += OnSwitchController;
     }
-    protected virtual void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         characterMainController.onSwitchState -= OnSwitchController;
     }
 
     protected virtual void Start()
     {
-        SetHealh(maxHealth);
+        SetHealth(maxHealth);
     }
 
     private void OnSwitchController(CharacterStateType state)
     {
-        isEnabled = state.HasFlag(CharacterStateType.move) ? true : false;
+        isEnabled = state.HasFlag(CharacterStateType.run) ? true : false;
     }
     public void Revival()
     {
         onRevival?.Invoke();
-        SetHealh(maxHealth);
+        SetHealth(maxHealth);
     }
-    public void TakeDamage(int damage)
+
+    public void TakeDamage(Damage damage)
     {
-        var result = Mathf.Max(currentHealth - damage, 0);
-        SetHealh(result);
+        var totalDamage = damage.GetTotalDamage(characterMainController.gameObject);
+        var result = Mathf.Max(currentHealth - totalDamage, 0);
+        SetHealth(result);
     }
 }

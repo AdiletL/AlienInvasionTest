@@ -185,7 +185,6 @@ MonoBehaviour:
   - {fileID: 5967567106529032773}
   - {fileID: 2910751634160860168}
   <so_CharacterConfig>k__BackingField: {fileID: 11400000, guid: 0e3e9a2298ef30a4cb5ee2e6f4e905c0, type: 2}
-  <enemyType>k__BackingField: 1
   currentZoneID: -1
 --- !u!114 &3500460176367139677
 MonoBehaviour:
@@ -199,6 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 899bf6482c372044eb681d6fbe6dc086, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterMainController: {fileID: 3599835803366225103}
 --- !u!1 &3820245884075765999
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,6 +453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 806f761cbff23b249aa31c614cf876a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterMainController: {fileID: 3599835803366225103}
 --- !u!1 &6017193450467986983
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,5 +780,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 960241fad1824004194b190fcd7fafc8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterMainController: {fileID: 3599835803366225103}
   healthBar: {fileID: 1138907014289507380}
   healthTxt: {fileID: 8272462886661856727}

@@ -13,11 +13,11 @@ public class GameController : MonoBehaviour, IController
     [SerializeField] private GameZone[] zones;
     [SerializeField] private Transform playerSpawnPosition;
 
-    private PlayerMainController playerMainController;
+    private PlayerController playerController;
 
-    public void Initialize(IController controller)
+    public void Initialize()
     {
-        var levelController = controller as LevelController;
+        var levelController = FindObjectOfType<LevelController>();
         if (levelController == null)
         {
             enabled = false;
@@ -83,8 +83,8 @@ public class GameController : MonoBehaviour, IController
 
     private void SpawnPlayer()
     {
-        playerMainController = PoolManager.Instance.GetObject<PlayerMainController>().GetComponent<PlayerMainController>();
-        playerMainController.transform.position = playerSpawnPosition.position;
+        playerController = PoolManager.Instance.GetObject<PlayerController>().GetComponent<PlayerController>();
+        playerController.transform.position = playerSpawnPosition.position;
     }
 
     private void SpawnEnemies()

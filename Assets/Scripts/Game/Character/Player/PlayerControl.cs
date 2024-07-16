@@ -3,25 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerControl : MonoBehaviour, IControl
+public class PlayerControl : MainControl
 {
     public event Action<Vector3> OnSwipe;
-    public IController iController { get; set; }
 
-    private PlayerMainController playerComponent;
+    [SerializeField] private PlayerController playerComponent;
+
     private Platform platform;
 
     private bool isEnabled = true;
 
-    public void Initialize(IController controller)
+    public override void Initialize()
     {
-        playerComponent = controller as PlayerMainController;
-        if (playerComponent == null)
-        {
-            enabled = false;
-            return;
-        }
-
+        base.Initialize();
 #if UNITY_EDITOR
         var mobile = new Mobile();
         mobile.joystick = FindObjectOfType<Joystick>();
@@ -34,6 +28,10 @@ public class PlayerControl : MonoBehaviour, IControl
 #endif
 
         var playerConfig = (SO_PlayerConfig)playerComponent.so_CharacterConfig;
+    }
+    protected override void SetController()
+    {
+        iController = playerComponent;
     }
 
     private void Start()

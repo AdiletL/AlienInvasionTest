@@ -1,45 +1,31 @@
 ﻿using UnityEngine;
 
-public class CharacterMoveControl : MonoBehaviour, IControl, IMove
+public abstract class CharacterMoveControl : MainControl, IMove
 {
-    public IController iController { get; set; }
+    [SerializeField] private CharacterMainController characterComponent;
 
-    private CharacterMainController characterComponent;
 
-    private bool isEnabled;
-
-    public virtual void Initialize(IController controller)
+    protected override void SetController()
     {
-        iController = controller;
-        characterComponent = controller as CharacterMainController;
-        if (characterComponent == null)
-        {
-            enabled = false;
-            return;
-        }
+        iController = characterComponent;
     }
-    protected virtual void OnEnable()
+
+    protected override void OnEnable()
     {
+        base.OnEnable();
         characterComponent.onSwitchState += OnSwitchController;
     }
-    protected virtual void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         characterComponent.onSwitchState -= OnSwitchController;
     }
 
-    private void OnSwitchController(CharacterStateType state)
-    {
-        isEnabled = state.HasFlag(CharacterStateType.move) ? true : false;
-    }
+    protected abstract void OnSwitchController(CharacterStateType state);
 
     protected virtual void Update()
     {
-        if (!isEnabled) return;
-
         Move();
     }
-    public virtual void Move()
-    {
-        
-    }
+    public abstract void Move();
 }

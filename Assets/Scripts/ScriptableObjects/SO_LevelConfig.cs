@@ -16,17 +16,22 @@ public class ZoneConfig : IConfigSO
     [System.Serializable]
     public class EnemyConfig : IConfigSO
     {
-        public EnemyType enemyType;
+        public SO_EnemyConfig so_EnemyConfig;
         public float cooldown;
         public int total;
     }
 
-    public ZoneConfig(ZoneConfig newConfig)
+    public ZoneConfig(EnemyConfig[] enemyConfigs)
     {
-        enemyConfigs = new EnemyConfig[newConfig.enemyConfigs.Length];
-        for (int i = 0; i < newConfig.enemyConfigs.Length; i++)
+        this.enemyConfigs = new EnemyConfig[enemyConfigs.Length];
+        for (int i = 0; i < enemyConfigs.Length; i++)
         {
-            enemyConfigs[i] = newConfig.enemyConfigs[i];
+            this.enemyConfigs[i] = new EnemyConfig
+            {
+                so_EnemyConfig = enemyConfigs[i].so_EnemyConfig,
+                cooldown = enemyConfigs[i].cooldown,
+                total = enemyConfigs[i].total,
+            };
         }
     }
 }

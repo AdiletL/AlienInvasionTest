@@ -2,23 +2,21 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameMainManager : MonoBehaviour, IManager
+public class GameManager : MonoBehaviour, IManager
 {
-    public static GameMainManager Instance { get; private set; }
+    public static GameManager Instance { get; private set; }
 
     public static event Action<GameStateType> OnSetGameStateType;
     public static bool IsPaused { get; private set; }
 
-    private List<GameObject> objectManagers = new List<GameObject>(10);
-
+    private List<IManager> managers;
 
     public T GetManager<T>()
     {
-        foreach (var item in objectManagers)
+        foreach (var item in managers)
         {
-            var manager = item.GetComponent<T>();
-            if (manager == null) continue;
-            return manager;
+            if (item is T manager)
+                return manager;
         }
         return default;
     }
@@ -40,23 +38,20 @@ public class GameMainManager : MonoBehaviour, IManager
         Application.targetFrameRate = 120;
 #endif
 
-        InitializeLink();
         Initialize();
     }
-    private void InitializeLink()
-    {
-        for (int i = 0; i < transform.childCount; i++)
-        {
-            objectManagers.Add(transform.GetChild(i).gameObject);
-        }
-    }
+
     public void Initialize()
     {
-        foreach (var item in objectManagers)
+        managers = new List<IManager>(transform.childCount);
+        for (int i = 0; i < transform.childCount; i++)
         {
-            var manager = item.GetComponent<IManager>();
-            if (manager == null) continue;
-            manager.Initialize();
+            var currentManagers = transform.GetChild(i).GetComponents<IManager>();
+            foreach (var item in currentManagers)
+            {
+                managers.Add(item);
+                item.Initialize();
+            }
         }
     }
 

@@ -8,20 +8,14 @@ public class LevelController : MonoBehaviour, IController
 
     private GameController currentGameController;
 
-    public T GetControl<T>()
+    public void Initialize()
     {
-        throw new System.NotImplementedException();
-    }
 
-    public void Initialize(IController component)
-    {
-        
     }
-
     public void SpawnLevel(int levelNumber)
     {
         currentGameController = Instantiate(so_LevelContainer.levels[levelNumber].gameController);
         currentGameController.transform.position = Vector3.zero;
-        currentGameController.Initialize(this);
+        currentGameController.Initialize();
     }
 }

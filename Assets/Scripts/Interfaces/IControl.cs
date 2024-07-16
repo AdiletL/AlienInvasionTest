@@ -1,13 +1,26 @@
+using UnityEngine;
+
 public interface IControl
 {
-    public IController iController { get; set; }
+}
+public interface IGameObjectControl : IControl
+{
+    public IGameObjectController iController { get; set; }
+    public void Initialize();
+
+}
+public interface ICameraControl : IControl
+{
     public void Initialize(IController controller);
 }
+public interface ICanvasControl : IControl
+{
+    public void Initialize();
+}
 
-public interface IAttack
+public interface IAttack : IDamage
 {
     public void Attack();
-    public void ApplyDamage(IHealth health);
 }
 
 public interface IMove
@@ -17,12 +30,23 @@ public interface IMove
 
 public interface IHealth
 {
-    public int GetHealth();
-    public void Revival();
-    public void TakeDamage(int damage);
+    public int GetMaxHealth();
+    public int GetCurrentHealth();
+    public void TakeDamage(Damage damage);
 }
-
 public interface ICollision
 {
+    public IGameObjectController iController { get; set; }
+}
 
+public interface IAnimation
+{
+
+}
+
+public interface IDetect
+{
+    public IGameObjectController iController { get; set; }
+    public T GetControl<T>();
+    public bool TryGetControl<T>(out T control);
 }

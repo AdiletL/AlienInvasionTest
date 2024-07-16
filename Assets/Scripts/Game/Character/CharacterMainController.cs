@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterMainController : MainBehaviour
+public class CharacterMainController : GameObjectController
 {
     public event Action<CharacterStateType> onSwitchState;
 
@@ -17,12 +17,12 @@ public class CharacterMainController : MainBehaviour
 
     protected override void Awake()
     {
-        base.Awake();
         actionStates = new List<CharacterActionState>(so_CharacterConfig.actionStates.Length);
         foreach (var item in so_CharacterConfig.actionStates)
         {
             actionStates.Add(new CharacterActionState(item));
         }
+        Initialize();
     }
 
     private void OnEnable()
@@ -53,9 +53,16 @@ public class CharacterMainController : MainBehaviour
         PoolManager.Instance.ReturnObjectToPool(gameObject);
     }
 
+    public override void Revival()
+    {
+
+    }
     public override void Die()
     {
-        base.Die();
+        if (!currentEnableState.HasFlag(CharacterStateType.dead)) return;
+
         SwitchState(CharacterStateType.dead);
     }
+
+    
 }

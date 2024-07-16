@@ -3,26 +3,24 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterFOVControl : MonoBehaviour, IControl
+public abstract class CharacterFOVControl : MainControl
 {
-    public event Action<List<IController>> onFOVEnter;
-    public IController iController { get; set; }
+    public event Action<List<IGameObjectController>> onFOVEnter;
 
-    private CharacterMainController characterMainController;
+    [SerializeField] private CharacterMainController characterMainController;
 
-    private List<IController> foundControllers = new List<IController>(100);
+    private List<IGameObjectController> foundControllers = new List<IGameObjectController>(100);
 
     private float radius;
-    private float angle;
     private float cooldown;
     private float countCooldown;
 
-    protected IController GetTriggerTarget(Vector3 endPoint)
+    protected IGameObjectController GetCheckController(Vector3 endPoint)
     {
         Vector3 direction = (endPoint - transform.position).normalized;
         if (Physics.Raycast(transform.position, direction, out RaycastHit hit, radius))
         {
-            if (hit.transform.TryGetComponent(out IControl control))
+            if (hit.transform.TryGetComponent(out IGameObjectControl control))
             {
                 return control.iController;
             }
@@ -30,19 +28,15 @@ public class CharacterFOVControl : MonoBehaviour, IControl
         return null;
     }
 
-    public virtual void Initialize(IController controller)
+    public override void Initialize()
     {
-        iController = controller;
-        characterMainController = iController as CharacterMainController;
-        if (characterMainController == null)
-        {
-            enabled = false;
-            return;
-        }
-
+        base.Initialize();
         radius = characterMainController.so_CharacterConfig.radiusFOV;
-        angle = characterMainController.so_CharacterConfig.angleFOV;
         cooldown = characterMainController.so_CharacterConfig.cooldownFOV;
+    }
+    protected override void SetController()
+    {
+        iController = characterMainController;
     }
 
     private void LateUpdate()
@@ -64,7 +58,7 @@ public class CharacterFOVControl : MonoBehaviour, IControl
         {
             if (hitColliders[i].GetComponent<ICollision>() == null) continue;
 
-            var target = GetTriggerTarget(hitColliders[i].transform.position);
+            var target = GetCheckController(hitColliders[i].transform.position);
             foundControllers.Add(target);
         }
         onFOVEnter?.Invoke(foundControllers);

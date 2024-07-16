@@ -5,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMoveControl : CharacterMoveControl
 {
-    private PlayerMainController playerComponent;
+    private PlayerController playerComponent;
     private CharacterController characterController;
 
     private Vector3 currentDirection;
@@ -14,22 +14,22 @@ public class PlayerMoveControl : CharacterMoveControl
     private float rotateSpeed = 7;
     private float gravity = 4;
 
-    public override void Initialize(IController controller)
-    {
-        base.Initialize(controller);
-        playerComponent = controller as PlayerMainController;
-        if(playerComponent == null)
-        {
-            enabled = false;
-            return;
-        }
+    private bool isRunEnabled;
 
+    public override void Initialize()
+    {
+        base.Initialize();
         characterController = GetComponent<CharacterController>();
 
         var playerConfig = (SO_PlayerConfig)playerComponent.so_CharacterConfig;
         movementSpeed = playerConfig.movementSpeed;
         rotateSpeed = playerConfig.rotateSpeed;
         gravity = playerConfig.gravity;
+    }
+    protected override void SetController()
+    {
+        base.SetController();
+        playerComponent = (PlayerController)iController;
     }
     protected override void OnEnable()
     {
@@ -46,17 +46,17 @@ public class PlayerMoveControl : CharacterMoveControl
 
     public override void Move()
     {
-        base.Move();
-
-        if (currentDirection == Vector3.zero) playerComponent.SwitchState(CharacterStateType.idle);
-        else playerComponent.SwitchState(CharacterStateType.move);
-
         RotatePlayer();
         MovePlayer();
     }
 
     private void MovePlayer()
     {
+        if (!isRunEnabled) return;
+
+        if (currentDirection == Vector3.zero) playerComponent.SwitchState(CharacterStateType.idle);
+        else playerComponent.SwitchState(CharacterStateType.run);
+
         Vector3 move = new Vector3(currentDirection.x, 0, currentDirection.z);
         move.y += gravity;
         characterController.Move(move * movementSpeed * Time.deltaTime);
@@ -68,5 +68,10 @@ public class PlayerMoveControl : CharacterMoveControl
             Quaternion targetRotation = Quaternion.LookRotation(new Vector3(currentDirection.x, 0, currentDirection.z));
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
         }
+    }
+
+    protected override void OnSwitchController(CharacterStateType state)
+    {
+        isRunEnabled = state.HasFlag(CharacterStateType.run) ? true : false;
     }
 }

@@ -127,7 +127,6 @@ MonoBehaviour:
   - {fileID: 5606193085199055356}
   - {fileID: 4626304381064930522}
   <so_CharacterConfig>k__BackingField: {fileID: 11400000, guid: 062a7d7869e32cc4e8cc6f009deb71f5, type: 2}
-  <enemyType>k__BackingField: 2
   currentZoneID: -1
 --- !u!114 &737387867251024058
 MonoBehaviour:
@@ -141,6 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c256db9416a2844397c84d9a4d90db3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterMainController: {fileID: 936052794966860106}
 --- !u!1 &1670556964321349947
 GameObject:
   m_ObjectHideFlags: 0
@@ -512,6 +512,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0d510e9d1b52b9419da6eb13cd46796, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterMainController: {fileID: 936052794966860106}
 --- !u!1 &7811125339363499169
 GameObject:
   m_ObjectHideFlags: 0
@@ -774,6 +775,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f34cc024fd4a91b498c96455b9049e0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterMainController: {fileID: 936052794966860106}
   healthBar: {fileID: 7731886715035937696}
   healthTxt: {fileID: 8308282140705845722}
 --- !u!224 &5350302230717977340 stripped

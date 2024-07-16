@@ -172,6 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 40a320284aee5f140af0df3b1fb98c8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterMainController: {fileID: 7233221253407241934}
 --- !u!114 &3343088724808239359
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,6 +185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b9760a2dfb3d194a83b6836b356bd68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerComponent: {fileID: 7233221253407241934}
 --- !u!114 &7461651100048139416
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,6 +198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cc570e6ae45f634991a7e8dbe09002e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterMainController: {fileID: 7233221253407241934}
   pullPosition: {fileID: 6470519206214824041}
 --- !u!143 &6840211619898405864
 CharacterController:
@@ -235,6 +238,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5d976134108c1b4897124140879586f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterComponent: {fileID: 7233221253407241934}
 --- !u!1 &1758212795053498180
 GameObject:
   m_ObjectHideFlags: 0
@@ -388,6 +392,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d93d6423473ff9a4f89de84098392393, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  characterMainController: {fileID: 7233221253407241934}
   radiusFOV: {fileID: 5251560040508492663}
 --- !u!1 &3765106368183195174
 GameObject:

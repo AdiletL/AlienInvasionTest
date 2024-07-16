@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class GameZone : MonoBehaviour
 {
@@ -10,7 +12,7 @@ public class GameZone : MonoBehaviour
 
     private Coroutine enemyCoroutine;
 
-    private Dictionary<EnemyType, int> keyEnemyTotal;
+    private Dictionary<Type, int> keyEnemyTotal;
 
     [HideInInspector] public int zoneID = -1;
 
@@ -31,26 +33,26 @@ public class GameZone : MonoBehaviour
             enabled = false;
             return;
         }
-        this.zoneConfig = new ZoneConfig(zoneConfig);
+        this.zoneConfig = new ZoneConfig(zoneConfig.enemyConfigs);
 
-        keyEnemyTotal = new Dictionary<EnemyType, int>(zoneConfig.enemyConfigs.Length);
+        keyEnemyTotal = new Dictionary<Type, int>(zoneConfig.enemyConfigs.Length);
         foreach (var item in zoneConfig.enemyConfigs)
-            keyEnemyTotal.Add(item.enemyType, 0);
+            keyEnemyTotal.Add(EnemyFactory.Convert(item.so_EnemyConfig).GetType(), 0);
     }
 
     private void OnEnable()
     {
-        EnemyMainController.OnReturnToPool += OnReturnToPoolEnemy;
+        EnemyController.OnReturnToPool += OnReturnToPoolEnemy;
     }
     private void OnDisable()
     {
-        EnemyMainController.OnReturnToPool -= OnReturnToPoolEnemy;
+        EnemyController.OnReturnToPool -= OnReturnToPoolEnemy;
     }
 
-    private void OnReturnToPoolEnemy(EnemyType enemyType, int zoneID)
+    private void OnReturnToPoolEnemy(Type data, int zoneID)
     {
-        if (this.zoneID != zoneID || !keyEnemyTotal.ContainsKey(enemyType)) return;
-        else keyEnemyTotal[enemyType]--;
+        if (this.zoneID != zoneID || !keyEnemyTotal.ContainsKey(data)) return;
+        else keyEnemyTotal[data]--;
     }
 
     public void StartSpawnEnemies()
@@ -69,7 +71,7 @@ public class GameZone : MonoBehaviour
 
         while (true)
         {
-            if (!GameMainManager.IsPaused)
+            if (!GameManager.IsPaused)
             {
                 for (int i = 0; i < countTimes.Count; i++)
                 {
@@ -77,15 +79,16 @@ public class GameZone : MonoBehaviour
 
                     if (countTimes[i] >= zoneConfig.enemyConfigs[i].cooldown)
                     {
-                        if (keyEnemyTotal[zoneConfig.enemyConfigs[i].enemyType] < zoneConfig.enemyConfigs[i].total)
+                        var key = EnemyFactory.Convert(zoneConfig.enemyConfigs[i].so_EnemyConfig).GetType();
+                        if (keyEnemyTotal[key] < zoneConfig.enemyConfigs[i].total)
                         {
-                            var enemyGO = PoolManager.Instance.GetEnemy(zoneConfig.enemyConfigs[i].enemyType);
+                            var enemyGO = EnemyFactory.Create(zoneConfig.enemyConfigs[i].so_EnemyConfig);
                             enemyGO.transform.position = GetNewPosition();
                             enemyGO.transform.SetParent(transform);
-                            var enemy = enemyGO.GetComponent<EnemyMainController>();
+                            var enemy = enemyGO.GetComponent<EnemyController>();
                             enemy.currentZoneID = zoneID;
                             enemy.GetControl<EnemyHealthControl>().Revival();
-                            keyEnemyTotal[enemy.enemyType]++;
+                            keyEnemyTotal[key]++;
                         }
 
                         countTimes[i] = 0;

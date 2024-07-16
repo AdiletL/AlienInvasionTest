@@ -5,34 +5,28 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(LookAtCamera))]
-public class CharacterUIControl : MonoBehaviour, IControl
+public class CharacterUIControl : MainControl
 {
+    [SerializeField] private CharacterMainController characterMainController;
+
+    [Space]
     [SerializeField] protected Image healthBar;
     [SerializeField] protected TextMeshProUGUI healthTxt;
 
-    public IController iController { get; set; }
-
-    private CharacterMainController characterController;
-
-    public virtual void Initialize(IController controller)
+    protected override void SetController()
     {
-        iController = controller;
-        characterController = controller as CharacterMainController;
-        if (characterController == null)
-        {
-            enabled = false;
-            return;
-        }
+        iController = characterMainController;
     }
-    protected virtual void OnEnable()
+    protected override void OnEnable()
     {
-        characterController.GetControl<CharacterHealthCotrol>().onSetHealth += OnSetHealth;
+        base.OnEnable();
+        characterMainController.GetControl<CharacterHealthCotrol>().onSetHealth += OnSetHealth;
 
     }
-    protected virtual void OnDisable()
+    protected override void OnDisable()
     {
-        characterController.GetControl<CharacterHealthCotrol>().onSetHealth -= OnSetHealth;
-
+        base.OnDisable();
+        characterMainController.GetControl<CharacterHealthCotrol>().onSetHealth -= OnSetHealth;
     }
 
     protected virtual void OnSetHealth(int maxHealth, int currentHealth)

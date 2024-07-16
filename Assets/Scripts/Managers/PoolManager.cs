@@ -44,36 +44,6 @@ public class PoolManager : MonoBehaviour, IManager
         new NullReferenceException();
         return null;
     }
-
-    public GameObject GetEnemy(EnemyType enemyType)
-    {
-        foreach (var item in objectPool)
-        {
-            var component = item.GetComponent<EnemyMainController>();
-            if (component == null) continue;
-
-            if (component.enemyType != enemyType) continue;
-
-            item.SetActive(true);
-            item.transform.SetParent(null);
-            objectPool.Remove(item);
-            return item;
-        }
-
-        foreach (var item in prefabs)
-        {
-            var component = item.GetComponent<EnemyMainController>();
-            if (component == null) continue;
-
-            if (component.enemyType != enemyType) continue;
-
-            return Instantiate(item);
-        }
-
-        new NullReferenceException();
-        return null;
-    }
-
     public void ReturnObjectToPool(GameObject gameObject)
     {
         if (!gameObject) return;

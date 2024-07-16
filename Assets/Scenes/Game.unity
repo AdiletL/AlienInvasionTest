@@ -408,7 +408,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3306901299641809919, guid: 1a6de6c10450e5042b7d10cb446e6373, type: 3}
       propertyPath: m_Name
-      value: GameMainManager
+      value: GameManager
       objectReference: {fileID: 0}
     - target: {fileID: 4438871626730866053, guid: 1a6de6c10450e5042b7d10cb446e6373, type: 3}
       propertyPath: m_LocalPosition.x
@@ -922,10 +922,10 @@ Transform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 647602980}
   - {fileID: 963194228}
   - {fileID: 705507995}
   - {fileID: 110564902}
   - {fileID: 2074184356}
   - {fileID: 600900804}
   - {fileID: 936058281}
-  - {fileID: 647602980}

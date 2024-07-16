@@ -1,10 +1,18 @@
+using UnityEngine;
+
 public interface IController
 {
-    public void Initialize(IController components);
-    public T GetControl<T>();
+    public void Initialize();
 }
 
 public interface IGameObjectController : IController
 {
-    public void Die();
+    public T GetControl<T>();
+
+    public bool TryGetControl<T>(out T control) where T : Component;
+}
+
+public interface ICanvasController : IController
+{
+
 }

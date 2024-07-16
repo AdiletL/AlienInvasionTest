@@ -5,26 +5,31 @@ using UnityEngine;
 
 public class PlayerFOVControl : CharacterFOVControl
 {
-    private PlayerMainController playerMainController;
+    private PlayerController playerController;
 
     [SerializeField] private GameObject radiusFOV;
 
-
-    public override void Initialize(IController controller)
+    public override void Initialize()
     {
-        base.Initialize(controller);
-        playerMainController = iController as PlayerMainController;
-        radiusFOV.transform.localScale = Vector3.one * (playerMainController.so_CharacterConfig.radiusFOV * 2);
+        base.Initialize();
+        radiusFOV.transform.localScale = Vector3.one * (playerController.so_CharacterConfig.radiusFOV * 2);
         radiusFOV.SetActive(false);
     }
-
-    private void OnEnable()
+    protected override void SetController()
     {
-        playerMainController.GetControl<PlayerAttackControl>().OnAttack += OnAttack;
+        base.SetController();
+        playerController = (PlayerController)iController;
     }
-    private void OnDisable()
+
+    protected override void OnEnable()
     {
-        playerMainController.GetControl<PlayerAttackControl>().OnAttack -= OnAttack;
+        base.OnEnable();
+        playerController.GetControl<PlayerAttackControl>().OnAttack += OnAttack;
+    }
+    protected override void OnDisable()
+    {
+        base.OnDisable();
+        playerController.GetControl<PlayerAttackControl>().OnAttack -= OnAttack;
     }
 
     private void OnAttack(bool isAttack) => radiusFOV.SetActive(isAttack);

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyUIControl : CharacterUIControl
+public abstract class EnemyUIControl : CharacterUIControl
 {
     
 }
